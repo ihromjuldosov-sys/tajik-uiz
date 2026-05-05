@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="tg">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Викторинаи Тоҷикӣ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --lapis: #1B3A6B;
+  --lapis2: #0F2548;
+  --lapis3: #243D72;
+  --gold: #C9952A;
+  --gold2: #E8B84B;
+  --gold3: #F5D07A;
+  --gold-glow: rgba(201,149,42,0.35);
+  --crimson: #8B2635;
+  --cream: #F8F2E3;
+  --cream2: #EDE4CC;
+  --text: #F8F2E3;
+  --text2: #C4B48A;
+  --text3: #7A6B4F;
+  --easy: #2E8B57; --easy-l: rgba(46,139,87,0.15); --easy-g: linear-gradient(135deg,#2E8B57,#52C47A);
+  --med:  #B8860B; --med-l:  rgba(184,134,11,0.15);  --med-g:  linear-gradient(135deg,#B8860B,#DAA520);
+  --hard: #8B1A1A; --hard-l: rgba(139,26,26,0.15);   --hard-g: linear-gradient(135deg,#8B1A1A,#C0392B);
+  --r: 18px; --r2: 12px; --r3: 8px;
+  --shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--lapis2);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg-canvas {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.bg-canvas::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(201,149,42,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 90%, rgba(139,38,53,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(27,58,107,0.8) 0%, var(--lapis2) 70%);
+}
+/* Arabesque SVG pattern overlay */
+.bg-canvas::after {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cpath d='M40 0 L80 40 L40 80 L0 40 Z' fill='none' stroke='rgba(201,149,42,0.06)' stroke-width='1'/%3E%3Ccircle cx='40' cy='40' r='15' fill='none' stroke='rgba(201,149,42,0.04)' stroke-width='1'/%3E%3Cpath d='M40 10 Q55 25 40 40 Q25 25 40 10Z' fill='rgba(201,149,42,0.03)'/%3E%3Cpath d='M40 70 Q55 55 40 40 Q25 55 40 70Z' fill='rgba(201,149,42,0.03)'/%3E%3Cpath d='M10 40 Q25 55 40 40 Q25 25 10 40Z' fill='rgba(201,149,42,0.03)'/%3E%3Cpath d='M70 40 Q55 25 40 40 Q55 55 70 40Z' fill='rgba(201,149,42,0.03)'/%3E%3C/svg%3E");
+  background-size: 80px 80px;
+  opacity: 1;
+}
+
+/* ── GOLD BORDER TOP ── */
+.gold-line {
+  position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 100;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gold2), var(--gold3), var(--gold2), var(--gold), transparent);
+  box-shadow: 0 0 20px var(--gold-glow);
+}
+
+#app {
+  position: relative; z-index: 1;
+  max-width: 430px; margin: 0 auto;
+  padding: 1rem 1rem 3rem;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; animation: fadeUp 0.4s cubic-bezier(.16,1,.3,1); }
+.screen.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:none; } }
+
+/* ── HERO ── */
+.hero { text-align: center; padding: 2rem 0 1.5rem; }
+.hero-emblem {
+  width: 80px; height: 80px; margin: 0 auto 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold2), var(--gold3));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px;
+  box-shadow: 0 0 0 6px rgba(201,149,42,0.15), 0 0 40px var(--gold-glow);
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+@keyframes glow-pulse {
+  0%,100% { box-shadow: 0 0 0 6px rgba(201,149,42,0.15), 0 0 40px var(--gold-glow); }
+  50%      { box-shadow: 0 0 0 10px rgba(201,149,42,0.2), 0 0 60px rgba(201,149,42,0.5); }
+}
+.hero-title {
+  font-family: 'Cinzel', serif;
+  font-size: 24px; font-weight: 900;
+  letter-spacing: 1px;
+  background: linear-gradient(135deg, var(--gold2) 0%, var(--gold3) 50%, var(--gold2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  margin-bottom: 6px;
+}
+.hero-sub {
+  font-size: 12px; color: var(--text2);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  letter-spacing: 0.5px;
+}
+.hero-sep { color: var(--gold); font-size: 8px; }
+
+/* ── ORNAMENT DIVIDER ── */
+.ornament {
+  text-align: center; margin: 0.75rem 0;
+  color: var(--gold); font-size: 16px; letter-spacing: 6px;
+  opacity: 0.6;
+}
+
+/* ── CARD ── */
+.card {
+  background: linear-gradient(160deg, rgba(27,58,107,0.9) 0%, rgba(15,37,72,0.95) 100%);
+  border-radius: var(--r);
+  border: 1px solid rgba(201,149,42,0.25);
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(201,149,42,0.1);
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,149,42,0.4), transparent);
+}
+
+/* ── LABEL ── */
+.lbl {
+  font-size: 10px; font-weight: 800; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px;
+  display: flex; align-items: center; gap: 6px;
+}
+.lbl::before, .lbl::after { content: '◆'; font-size: 6px; opacity: 0.5; }
+
+/* ── INPUT ── */
+.inp {
+  width: 100%; padding: 0.85rem 1rem;
+  border-radius: var(--r2);
+  border: 1px solid rgba(201,149,42,0.2);
+  background: rgba(0,0,0,0.25);
+  color: var(--text); font-size: 15px;
+  font-family: 'Nunito', sans-serif;
+  outline: none; transition: all .25s; margin-bottom: 1.2rem;
+}
+.inp::placeholder { color: var(--text3); }
+.inp:focus { border-color: var(--gold); background: rgba(201,149,42,0.05); box-shadow: 0 0 0 3px rgba(201,149,42,0.1); }
+.inp.err { border-color: var(--hard); }
+
+/* ── BUTTONS ── */
+.btn {
+  width: 100%; padding: 0.95rem;
+  border-radius: var(--r2); border: none;
+  font-size: 15px; font-weight: 800;
+  cursor: pointer; font-family: 'Nunito', sans-serif;
+  transition: all .2s; margin-bottom: 10px;
+  letter-spacing: 0.3px; position: relative; overflow: hidden;
+}
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0); transition: background .2s;
+}
+.btn:hover::after { background: rgba(255,255,255,0.06); }
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 50%, var(--gold) 100%);
+  background-size: 200% 100%;
+  color: var(--lapis2); font-weight: 900;
+  box-shadow: 0 4px 20px var(--gold-glow);
+  animation: shimmer 3s ease infinite;
+}
+@keyframes shimmer { 0%{background-position:100% 0} 100%{background-position:-100% 0} }
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--gold-glow); }
+.btn-ghost {
+  background: rgba(201,149,42,0.08);
+  border: 1px solid rgba(201,149,42,0.2);
+  color: var(--text2);
+}
+.btn-ghost:hover { background: rgba(201,149,42,0.14); color: var(--text); border-color: rgba(201,149,42,0.35); }
+
+/* ── LANG TOGGLE ── */
+.lang-row { display: flex; gap: 8px; margin-bottom: 1.2rem; }
+.lang-btn {
+  flex: 1; padding: 0.65rem;
+  border-radius: var(--r3);
+  border: 1px solid rgba(201,149,42,0.15);
+  background: rgba(0,0,0,0.2);
+  color: var(--text3); font-size: 13px; font-weight: 700;
+  cursor: pointer; text-align: center; transition: all .2s;
+  font-family: 'Nunito', sans-serif;
+}
+.lang-btn.on { background: rgba(201,149,42,0.15); border-color: var(--gold); color: var(--gold2); }
+.lang-btn:hover:not(.on) { background: rgba(201,149,42,0.08); color: var(--text2); }
+
+/* ── DIFFICULTY CARDS ── */
+.diff-grid { display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.2rem; }
+.diff-card {
+  border-radius: var(--r2); border: 1px solid rgba(201,149,42,0.12);
+  padding: 1rem 1.1rem; cursor: pointer; transition: all .25s;
+  display: flex; align-items: center; gap: 14px;
+  background: rgba(0,0,0,0.2); position: relative; overflow: hidden;
+}
+.diff-card:hover { transform: translateX(6px); border-color: rgba(201,149,42,0.3); }
+.diff-card.sel-easy { border-color: var(--easy); background: var(--easy-l); box-shadow: 0 0 20px rgba(46,139,87,0.2), inset 3px 0 0 var(--easy); }
+.diff-card.sel-med  { border-color: var(--med);  background: var(--med-l);  box-shadow: 0 0 20px rgba(184,134,11,0.2), inset 3px 0 0 var(--med); }
+.diff-card.sel-hard { border-color: var(--hard); background: var(--hard-l); box-shadow: 0 0 20px rgba(139,26,26,0.2), inset 3px 0 0 var(--hard); }
+.diff-gem {
+  width: 50px; height: 50px; border-radius: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 26px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.d-easy .diff-gem { background: var(--easy-l); }
+.d-med  .diff-gem { background: var(--med-l); }
+.d-hard .diff-gem { background: var(--hard-l); }
+.diff-info { flex: 1; }
+.diff-name { font-size: 15px; font-weight: 800; color: var(--text); }
+.diff-meta { font-size: 11px; color: var(--text2); margin-top: 3px; }
+.diff-pill {
+  font-size: 10px; font-weight: 800; padding: 4px 10px;
+  border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.d-easy .diff-pill { background: var(--easy-l); color: #52C47A; border: 1px solid rgba(46,139,87,0.3); }
+.d-med  .diff-pill { background: var(--med-l);  color: #DAA520; border: 1px solid rgba(184,134,11,0.3); }
+.d-hard .diff-pill { background: var(--hard-l); color: #E74C3C; border: 1px solid rgba(139,26,26,0.3); }
+
+/* ── Q-COUNT ── */
+.qcount-row { display: flex; gap: 8px; margin-bottom: 1.2rem; }
+.qc-btn {
+  flex: 1; padding: 0.6rem; border-radius: var(--r3);
+  border: 1px solid rgba(201,149,42,0.15);
+  background: rgba(0,0,0,0.2);
+  color: var(--text3); font-size: 14px; font-weight: 800;
+  cursor: pointer; text-align: center; transition: all .2s;
+  font-family: 'Nunito', sans-serif;
+}
+.qc-btn.on { background: rgba(201,149,42,0.15); border-color: var(--gold); color: var(--gold2); }
+
+/* ── AI BADGE ── */
+.ai-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,149,42,0.1); border: 1px solid rgba(201,149,42,0.25);
+  color: var(--gold2); font-size: 11px; font-weight: 700;
+  padding: 5px 13px; border-radius: 99px; margin-bottom: 14px; letter-spacing: 0.3px;
+}
+.ai-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold2); animation: blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── INFO ROW ── */
+.info-row { display: flex; justify-content: center; gap: 20px; padding: .5rem; font-size: 12px; color: var(--text3); font-weight: 600; }
+.info-item { display: flex; align-items: center; gap: 4px; }
+
+/* ── HUD ── */
+.hud {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: linear-gradient(160deg, rgba(27,58,107,0.95), rgba(15,37,72,0.98));
+  border-radius: var(--r2);
+  border: 1px solid rgba(201,149,42,0.2);
+  padding: 0.8rem 1.1rem; margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.hud::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,149,42,0.3), transparent);
+}
+.hud-item { }
+.hud-item:last-child { text-align: right; }
+.hud-item:nth-child(2) { text-align: center; }
+.hud-lbl { font-size: 9px; font-weight: 800; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; }
+.hud-val { font-size: 20px; font-weight: 900; margin-top: 2px; }
+.hud-sep { width: 1px; height: 40px; background: rgba(201,149,42,0.15); margin: 0 12px; }
+
+/* ── PROGRESS ── */
+.prog-wrap { margin-bottom: 0.8rem; }
+.prog-track { height: 5px; background: rgba(255,255,255,0.05); border-radius: 99px; overflow: hidden; border: 1px solid rgba(201,149,42,0.1); }
+.prog-fill { height: 100%; border-radius: 99px; transition: width .5s cubic-bezier(.4,0,.2,1); }
+
+/* ── TIMER ── */
+.timer-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 0.9rem; }
+.timer-track { flex: 1; height: 4px; background: rgba(255,255,255,0.05); border-radius: 99px; overflow: hidden; }
+.timer-fill { height: 100%; border-radius: 99px; transition: width .1s linear; }
+.timer-num { font-size: 14px; font-weight: 900; min-width: 28px; text-align: right; font-variant-numeric: tabular-nums; font-family: 'Cinzel', serif; }
+
+/* ── STREAK ── */
+.streak-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 14px; border-radius: 99px;
+  background: rgba(201,149,42,0.08); border: 1px solid rgba(201,149,42,0.15);
+  margin-bottom: 0.9rem; font-size: 13px; font-weight: 800; color: var(--text2);
+  transition: all .3s;
+}
+.streak-chip.hot { background: rgba(201,149,42,0.18); border-color: var(--gold); color: var(--gold2); box-shadow: 0 0 15px var(--gold-glow); }
+
+/* ── Q CARD ── */
+.q-card {
+  background: linear-gradient(160deg, rgba(27,58,107,0.9), rgba(15,37,72,0.95));
+  border-radius: var(--r); border: 1px solid rgba(201,149,42,0.2);
+  padding: 1.4rem; margin-bottom: 1rem;
+  box-shadow: var(--shadow), inset 0 1px 0 rgba(201,149,42,0.1);
+  position: relative; overflow: hidden;
+}
+.q-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(201,149,42,0.4), transparent);
+}
+.q-card::after {
+  content: ''; position: absolute; bottom: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(201,149,42,0.06), transparent 70%);
+  border-radius: 50%; pointer-events: none;
+}
+.q-top { display: flex; align-items: center; gap: 7px; margin-bottom: 12px; flex-wrap: wrap; }
+.q-pill {
+  font-size: 10px; font-weight: 800; padding: 3px 10px;
+  border-radius: 99px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+.q-pill-cat  { background: rgba(201,149,42,0.12); color: var(--gold2); border: 1px solid rgba(201,149,42,0.2); }
+.q-pill-lang { background: rgba(255,255,255,0.06); color: var(--text2); border: 1px solid rgba(255,255,255,0.08); }
+.q-pill-easy { background: var(--easy-l); color: #52C47A; border: 1px solid rgba(46,139,87,0.25); }
+.q-pill-med  { background: var(--med-l);  color: #DAA520; border: 1px solid rgba(184,134,11,0.25); }
+.q-pill-hard { background: var(--hard-l); color: #E74C3C; border: 1px solid rgba(139,26,26,0.25); }
+.q-num { font-family: 'Cinzel', serif; font-size: 11px; color: var(--text3); margin-left: auto; }
+.q-text { font-size: 17px; font-weight: 700; color: var(--text); line-height: 1.65; }
+.q-hint {
+  font-size: 12px; color: var(--gold2); margin-top: 12px;
+  padding: 8px 12px; border-radius: var(--r3);
+  background: rgba(201,149,42,0.08); border: 1px solid rgba(201,149,42,0.2);
+  animation: fadeUp .3s ease;
+}
+
+/* ── OPTIONS ── */
+.opts { display: flex; flex-direction: column; gap: 9px; margin-bottom: 1rem; }
+.opt {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0.9rem 1rem; border-radius: var(--r2);
+  border: 1px solid rgba(201,149,42,0.12);
+  background: rgba(0,0,0,0.2);
+  color: var(--text); font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+  font-family: 'Nunito', sans-serif; text-align: left;
+}
+.opt:hover:not(:disabled) {
+  background: rgba(201,149,42,0.08);
+  border-color: rgba(201,149,42,0.3);
+  transform: translateX(6px);
+}
+.opt:disabled { cursor: default; }
+.opt.correct {
+  background: rgba(46,139,87,0.15); border-color: var(--easy);
+  color: #86EFB5;
+  animation: popIn .35s cubic-bezier(.16,1,.3,1);
+}
+.opt.wrong {
+  background: rgba(139,26,26,0.15); border-color: var(--hard);
+  color: #FCA5A5;
+  animation: shake .4s ease;
+}
+@keyframes popIn  { 0%{transform:scale(.97)translateX(0)} 60%{transform:scale(1.02)translateX(0)} 100%{transform:scale(1)translateX(0)} }
+@keyframes shake  { 0%,100%{transform:translateX(6px)} 25%{transform:translateX(0)} 75%{transform:translateX(12px)} }
+
+.opt-letter {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  background: rgba(201,149,42,0.08); border: 1px solid rgba(201,149,42,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700; color: var(--gold);
+  transition: all .2s;
+}
+.opt.correct .opt-letter { background: var(--easy); border-color: var(--easy); color: #fff; }
+.opt.wrong   .opt-letter { background: var(--hard); border-color: var(--hard); color: #fff; }
+.opt:hover:not(:disabled) .opt-letter { background: rgba(201,149,42,0.18); }
+
+/* ── FEEDBACK ── */
+.fb {
+  padding: .9rem 1rem; border-radius: var(--r2);
+  font-size: 14px; font-weight: 600; margin-bottom: 1rem; line-height: 1.6;
+  animation: fadeUp .3s ease;
+}
+.fb-ok   { background: rgba(46,139,87,0.12);  border: 1px solid rgba(46,139,87,0.3);  color: #86EFB5; }
+.fb-no   { background: rgba(139,26,26,0.12);  border: 1px solid rgba(139,26,26,0.3);  color: #FCA5A5; }
+.fb-time { background: rgba(201,149,42,0.1);  border: 1px solid rgba(201,149,42,0.25); color: var(--gold2); }
+
+/* ── LOADING ── */
+.load-wrap { text-align: center; padding: 5rem 1rem; }
+.load-emblem {
+  width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 24px;
+  background: linear-gradient(135deg, rgba(201,149,42,0.2), rgba(201,149,42,0.05));
+  border: 2px solid rgba(201,149,42,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px;
+  animation: load-spin 2s linear infinite;
+  box-shadow: 0 0 30px var(--gold-glow);
+}
+@keyframes load-spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+.load-txt { font-size: 16px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
+.load-dots { display: flex; justify-content: center; gap: 6px; }
+.load-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); opacity: 0.3; animation: dot-pulse 1.2s ease-in-out infinite; }
+.load-dot:nth-child(2) { animation-delay: .2s; }
+.load-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes dot-pulse { 0%,80%,100%{opacity:.3;transform:scale(.8)} 40%{opacity:1;transform:scale(1)} }
+
+/* ── RESULT ── */
+.result-wrap { text-align: center; padding: 1.5rem 0; }
+.result-trophy {
+  width: 90px; height: 90px; border-radius: 24px; margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center; font-size: 46px;
+  animation: trophy-in .6s cubic-bezier(.16,1,.3,1);
+  position: relative;
+}
+.result-trophy::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 28px;
+  border: 2px solid rgba(201,149,42,0.4);
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+@keyframes trophy-in { 0%{transform:scale(0) rotate(-10deg);opacity:0} 60%{transform:scale(1.1) rotate(3deg)} 100%{transform:scale(1) rotate(0)} }
+.result-score {
+  font-family: 'Cinzel', serif;
+  font-size: 54px; font-weight: 900; letter-spacing: -2px;
+  background: linear-gradient(135deg, var(--gold2), var(--gold3), var(--gold2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.result-sub { font-size: 13px; color: var(--text2); margin: 4px 0 10px; }
+.result-msg { font-size: 15px; color: var(--text); font-weight: 700; line-height: 1.5; margin-bottom: 8px; }
+.result-rank {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 800;
+  padding: 7px 16px; border-radius: 99px; margin-bottom: 1.5rem;
+  background: rgba(201,149,42,0.12); border: 1px solid rgba(201,149,42,0.3);
+  color: var(--gold2);
+}
+.stats-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+.stat-box {
+  flex: 1; border-radius: var(--r2); padding: .85rem; text-align: center;
+  background: rgba(0,0,0,0.2); border: 1px solid rgba(201,149,42,0.12);
+}
+.stat-n { font-family: 'Cinzel', serif; font-size: 26px; font-weight: 700; }
+.stat-l { font-size: 10px; color: var(--text3); font-weight: 700; text-transform: uppercase; letter-spacing: .3px; margin-top: 3px; }
+.bonus-box {
+  background: rgba(201,149,42,0.08); border: 1px solid rgba(201,149,42,0.2);
+  border-radius: var(--r2); padding: .85rem 1rem; text-align: center;
+  margin-bottom: 1rem; font-size: 14px; font-weight: 700; color: var(--gold2);
+}
+
+/* ── LEADERBOARD ── */
+.lb-hero { text-align: center; padding: 1rem 0; }
+.lb-title { font-family: 'Cinzel', serif; font-size: 22px; font-weight: 700; color: var(--gold2); }
+.lb-sub { font-size: 12px; color: var(--text2); margin-top: 4px; }
+.tabs { display: flex; gap: 8px; margin-bottom: 1.25rem; }
+.tab {
+  flex: 1; padding: .55rem; border-radius: 99px;
+  border: 1px solid rgba(201,149,42,0.12);
+  background: rgba(0,0,0,0.2); color: var(--text3);
+  font-size: 12px; font-weight: 700; cursor: pointer; text-align: center;
+  transition: all .2s; font-family: 'Nunito', sans-serif;
+}
+.tab.on { background: rgba(201,149,42,0.15); border-color: var(--gold); color: var(--gold2); }
+.podium { display: flex; align-items: flex-end; justify-content: center; gap: 10px; margin-bottom: 1.5rem; }
+.pod-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.pod-av {
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-family: 'Cinzel', serif;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
+.pod-name { font-size: 11px; font-weight: 700; color: var(--text2); max-width: 72px; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pod-score { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--gold2); }
+.pod-block {
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+  border-radius: var(--r2) var(--r2) 0 0;
+  border: 1px solid rgba(201,149,42,0.2); border-bottom: none;
+  background: rgba(201,149,42,0.05);
+}
+.lb-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+.lb-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: .8rem 1rem;
+  background: rgba(0,0,0,0.2); border: 1px solid rgba(201,149,42,0.1);
+  border-radius: var(--r2); transition: all .2s;
+}
+.lb-row:hover { background: rgba(201,149,42,0.05); border-color: rgba(201,149,42,0.2); }
+.lb-row.me { background: rgba(201,149,42,0.1); border-color: rgba(201,149,42,0.3); }
+.lb-row.me .lb-name { color: var(--gold2); font-weight: 800; }
+.lb-rank { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700; color: var(--text3); min-width: 22px; }
+.lb-av { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; font-family: 'Cinzel', serif; flex-shrink: 0; }
+.lb-name { flex: 1; font-size: 14px; font-weight: 700; color: var(--text); }
+.lb-right { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+.lb-score { font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: var(--gold2); }
+.lb-dpill { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 99px; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(201,149,42,0.2); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<div class="bg-canvas"></div>
+<div class="gold-line"></div>
+
+<div id="app">
+
+  <!-- ══════ START ══════ -->
+  <div class="screen active" id="s-start">
+    <div class="hero">
+      <div class="hero-emblem">🇹🇯</div>
+      <div class="hero-title">Викторинаи Тоҷикӣ</div>
+      <div class="hero-sub">
+        <span>AI Бешумор</span>
+        <span class="hero-sep">◆</span>
+        <span>3 Сатҳ</span>
+        <span class="hero-sep">◆</span>
+        <span>TJ & EN</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="lbl">Номи шумо / Your name</div>
+      <input class="inp" id="player-name" type="text" placeholder="Номатонро нависед..." maxlength="20"/>
+
+      <div class="lbl">Забон / Language</div>
+      <div class="lang-row">
+        <button class="lang-btn on" id="lang-tj"   onclick="setLang('tj',this)">🇹🇯 Тоҷикӣ</button>
+        <button class="lang-btn"    id="lang-en"   onclick="setLang('en',this)">🇬🇧 English</button>
+        <button class="lang-btn"    id="lang-both" onclick="setLang('both',this)">🌍 Ҳар ду</button>
+      </div>
+
+      <div class="lbl">Сатҳ / Difficulty</div>
+      <div class="diff-grid">
+        <div class="diff-card d-easy" id="d-easy" onclick="setDiff('easy')">
+          <div class="diff-gem">🌿</div>
+          <div class="diff-info">
+            <div class="diff-name">Осон / Easy</div>
+            <div class="diff-meta">30 сония &nbsp;·&nbsp; ×1 хол &nbsp;·&nbsp; Саволҳои содда</div>
+          </div>
+          <span class="diff-pill">Осон</span>
+        </div>
+        <div class="diff-card d-med" id="d-med" onclick="setDiff('med')">
+          <div class="diff-gem">⚡</div>
+          <div class="diff-info">
+            <div class="diff-name">Миёна / Medium</div>
+            <div class="diff-meta">20 сония &nbsp;·&nbsp; ×1.5 хол &nbsp;·&nbsp; Миёна</div>
+          </div>
+          <span class="diff-pill">Миёна</span>
+        </div>
+        <div class="diff-card d-hard" id="d-hard" onclick="setDiff('hard')">
+          <div class="diff-gem">🔥</div>
+          <div class="diff-info">
+            <div class="diff-name">Душвор / Hard</div>
+            <div class="diff-meta">12 сония &nbsp;·&nbsp; ×2 хол &nbsp;·&nbsp; +💡 ишора</div>
+          </div>
+          <span class="diff-pill">Душвор</span>
+        </div>
+      </div>
+
+      <div class="lbl">Шумораи савол</div>
+      <div class="qcount-row" id="qcr">
+        <button class="qc-btn on" onclick="setQC(10,this)">10</button>
+        <button class="qc-btn"    onclick="setQC(20,this)">20</button>
+        <button class="qc-btn"    onclick="setQC(30,this)">30</button>
+      </div>
+
+      <div class="ornament">❧ ◆ ❧</div>
+      <div><span class="ai-badge"><span class="ai-dot"></span>✨ AI — Саволҳои бешумор</span></div>
+      <button class="btn btn-gold"  onclick="startGame()">Бозиро оғоз кун ✦</button>
+      <button class="btn btn-ghost" onclick="showBoard()">Рейтинг 🏆</button>
+    </div>
+
+    <div class="info-row">
+      <div class="info-item">📝 <span id="inf-q">10 савол</span></div>
+      <div class="info-item">⏱ <span id="inf-t">30 сония</span></div>
+      <div class="info-item">⭐ <span id="inf-p">×1 хол</span></div>
+    </div>
+  </div>
+
+  <!-- ══════ LOADING ══════ -->
+  <div class="screen" id="s-load">
+    <div class="load-wrap">
+      <div class="load-emblem">✦</div>
+      <div class="load-txt" id="load-txt">AI саволҳо месозад...</div>
+      <div style="font-size:12px;color:var(--text3);margin:6px 0 16px">Лутфан интизор шавед</div>
+      <div class="load-dots">
+        <div class="load-dot"></div>
+        <div class="load-dot"></div>
+        <div class="load-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════ GAME ══════ -->
+  <div class="screen" id="s-game">
+    <div class="hud">
+      <div class="hud-item">
+        <div class="hud-lbl">Хол</div>
+        <div class="hud-val" id="g-score" style="color:var(--gold2)">0</div>
+      </div>
+      <div class="hud-sep"></div>
+      <div class="hud-item" style="text-align:center">
+        <div class="hud-lbl">Бозикунанда</div>
+        <div class="hud-val" id="g-name" style="font-size:13px;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
+      </div>
+      <div class="hud-sep"></div>
+      <div class="hud-item">
+        <div class="hud-lbl">Савол</div>
+        <div class="hud-val" id="g-qnum">1/10</div>
+      </div>
+    </div>
+
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" id="g-prog" style="width:0%"></div></div>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-track"><div class="timer-fill" id="g-timer" style="width:100%"></div></div>
+      <div class="timer-num" id="g-tnum">30</div>
+    </div>
+
+    <div class="streak-chip" id="g-streak-chip">
+      <span>🔥</span><span>Силсила:</span>
+      <span id="g-streak">0</span>
+      <span id="g-streak-b" style="font-size:11px;opacity:.7"></span>
+    </div>
+
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-pill q-pill-cat"  id="g-cat-b"></span>
+        <span class="q-pill q-pill-lang" id="g-lang-b"></span>
+        <span class="q-pill"             id="g-diff-b"></span>
+        <span class="q-num"              id="g-qnum2"></span>
+      </div>
+      <div class="q-text" id="g-q">...</div>
+      <div class="q-hint" id="g-hint" style="display:none"></div>
+    </div>
+
+    <div class="opts" id="g-opts"></div>
+    <div class="fb"   id="g-fb"   style="display:none"></div>
+    <button class="btn btn-ghost" id="g-next" style="display:none" onclick="nextQ()">Давом кун →</button>
+  </div>
+
+  <!-- ══════ RESULT ══════ -->
+  <div class="screen" id="s-result">
+    <div class="result-wrap">
+      <div class="result-trophy" id="r-trophy"></div>
+      <div class="result-score" id="r-score">0</div>
+      <div class="result-sub"   id="r-sub">хол</div>
+      <div class="result-msg"   id="r-msg"></div>
+      <div class="result-rank"  id="r-rank">✦ №1</div>
+    </div>
+    <div class="bonus-box"  id="r-bonus" style="display:none"></div>
+    <div class="stats-row"  id="r-stats"></div>
+    <div class="ornament" style="margin:0 0 1rem">❧ ◆ ❧</div>
+    <button class="btn btn-gold"  onclick="showBoard()">Рейтингро бин 🏆</button>
+    <button class="btn btn-ghost" onclick="restartGame()">Аз нав бозӣ кун 🔄</button>
+  </div>
+
+  <!-- ══════ LEADERBOARD ══════ -->
+  <div class="screen" id="s-board">
+    <div class="lb-hero">
+      <div style="font-size:36px;margin-bottom:8px">🏆</div>
+      <div class="lb-title">Рейтинг</div>
+      <div class="lb-sub">Беҳтарин бозикунандагон</div>
+    </div>
+    <div class="ornament">❧ ◆ ❧</div>
+    <div class="tabs">
+      <div class="tab on" id="tab-all"  onclick="swTab('all')">Ҳама</div>
+      <div class="tab"    id="tab-easy" onclick="swTab('easy')">🌿 Осон</div>
+      <div class="tab"    id="tab-hard" onclick="swTab('hard')">🔥 Душвор</div>
+    </div>
+    <div class="podium"  id="b-pod"></div>
+    <div class="lb-list" id="b-list"></div>
+    <button class="btn btn-gold"  onclick="goHome()">Бозӣ кун ✦</button>
+  </div>
+
+</div>
+
+<script>
+const DIFF={
+  easy:{time:30,mult:1,  label:'🌿 Осон', cls:'q-pill-easy',prog:'linear-gradient(90deg,#2E8B57,#52C47A)',timer:'linear-gradient(90deg,#2E8B57,#52C47A)',tc:'#52C47A'},
+  med: {time:20,mult:1.5,label:'⚡ Миёна',cls:'q-pill-med', prog:'linear-gradient(90deg,#B8860B,#DAA520)',timer:'linear-gradient(90deg,#B8860B,#DAA520)',tc:'#DAA520'},
+  hard:{time:12,mult:2,  label:'🔥 Душвор',cls:'q-pill-hard',prog:'linear-gradient(90deg,#8B1A1A,#C0392B)',timer:'linear-gradient(90deg,#8B1A1A,#C0392B)',tc:'#E74C3C'},
+};
+const CLRS=[
+  {bg:'rgba(201,149,42,0.18)',c:'#E8B84B'},{bg:'rgba(27,58,107,0.6)',c:'#93B8E8'},
+  {bg:'rgba(139,38,53,0.3)',c:'#E88EA0'},{bg:'rgba(46,139,87,0.2)',c:'#86EFB5'},
+  {bg:'rgba(139,92,246,0.2)',c:'#C4B5FD'},{bg:'rgba(59,130,246,0.2)',c:'#93C5FD'},
+];
+const DEFS=[
+  {name:'Шаҳло', score:600,diff:'hard',ts:Date.now()-6e5},
+  {name:'Rustam', score:300,diff:'med', ts:Date.now()-18e5},
+  {name:'Нилуфар',score:200,diff:'easy',ts:Date.now()-72e5},
+  {name:'John',   score:150,diff:'med', ts:Date.now()-18e4},
+  {name:'Мадина', score:100,diff:'easy',ts:Date.now()-9e7},
+];
+
+let playerName='',lang='tj',diff='easy',qCount=10;
+let curQ=0,score=0,correct=0,wrong=0,answered=false,streak=0,maxStreak=0,bonusTotal=0;
+let questions=[],timerInt,timeLeft=30,lastScore=0,curTab='all';
+
+const gc=i=>CLRS[i%CLRS.length];
+const ini=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const shufl=a=>[...a].sort(()=>Math.random()-.5);
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
+function goHome(){show('s-start');}
+async function loadDB(){try{const r=await window.storage.get('tq-v6',true);return r?JSON.parse(r.value):DEFS;}catch(e){return DEFS;}}
+async function saveDB(d){try{await window.storage.set('tq-v6',JSON.stringify(d),true);}catch(e){}}
+
+function setLang(l,el){lang=l;document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+function setDiff(d){
+  diff=d;
+  document.querySelectorAll('.diff-card').forEach(c=>c.className=c.className.replace(/ sel-\w+/g,''));
+  document.getElementById('d-'+d).classList.add('sel-'+d);
+  document.getElementById('inf-t').textContent=DIFF[d].time+' сония';
+  document.getElementById('inf-p').textContent='×'+DIFF[d].mult+' хол';
+}
+function setQC(n,el){qCount=n;document.getElementById('inf-q').textContent=n+' савол';document.querySelectorAll('#qcr .qc-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');}
+
+async function generateQuestions(){
+  const cfg=DIFF[diff];
+  const dd={easy:'very simple basic knowledge, simple vocabulary, things most people know.',med:'moderately challenging, mix of common and less common facts.',hard:'challenging, requiring deep knowledge, tricky details, specific dates, technical facts.'};
+  const li=lang==='tj'?'Generate ALL questions in Tajik language (тоҷикӣ script).'
+    :lang==='en'?'Generate ALL questions in English.'
+    :'Mix: some in Tajik (тоҷикӣ), some in English.';
+  const cats=lang==='tj'?'Таърих, Ҷуғрофия, Илм, Адабиёт, Табиат, Математика'
+    :lang==='en'?'History, Geography, Science, Literature, Nature, Math'
+    :'Таърих, Ҷуғрофия, History, Geography, Science, Илм, Адабиёт, Nature, Math';
+  const p=`You are a quiz generator. ${li}
+Difficulty: ${diff.toUpperCase()} — ${dd[diff]}
+Categories: ${cats}
+Generate exactly ${qCount} questions across categories evenly.
+${diff==='hard'?'Add a short hint for each question.':''}
+Return ONLY valid JSON array, no markdown:
+[{"cat":"string","lang":"tj or en","q":"question","opts":["A","B","C","D"],"ans":0,"exp":"explanation 1-2 sentences"${diff==='hard'?',"hint":"short hint"':''}}]
+Rules: ans=correct index 0-3. All 4 options plausible. Vary categories.`;
+  const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:4000,messages:[{role:'user',content:p}]})});
+  const data=await r.json();
+  const raw=data.content.map(i=>i.text||'').join('');
+  return JSON.parse(raw.replace(/```json|```/g,'').trim());
+}
+
+async function startGame(){
+  const inp=document.getElementById('player-name');
+  playerName=inp?inp.value.trim():'';
+  if(!playerName){if(inp){inp.classList.add('err');inp.focus();}return;}
+  show('s-load');startLoadAnim();
+  try{questions=shufl(await generateQuestions()).slice(0,qCount);}
+  catch(e){questions=shufl(getFallback()).slice(0,qCount);}
+  clearInterval(window._li);
+  curQ=0;score=0;correct=0;wrong=0;streak=0;maxStreak=0;bonusTotal=0;answered=false;
+  document.getElementById('g-name').textContent=playerName;
+  const cfg=DIFF[diff];
+  document.getElementById('g-prog').style.background=cfg.prog;
+  document.getElementById('g-timer').style.background=cfg.timer;
+  show('s-game');renderQ();
+}
+
+const LMSGS=['AI саволҳо месозад...','Саволҳои ҷолиб интихоб мекунад...','Тайёр мешавад...','Қариб тайёр...'];
+function startLoadAnim(){let i=0;document.getElementById('load-txt').textContent=LMSGS[0];window._li=setInterval(()=>{i++;document.getElementById('load-txt').textContent=LMSGS[i%LMSGS.length];},1800);}
+
+function renderQ(){
+  if(curQ>=questions.length){endGame();return;}
+  const q=questions[curQ],cfg=DIFF[diff];
+  answered=false;timeLeft=cfg.time;
+  document.getElementById('g-score').textContent=score;
+  document.getElementById('g-qnum').textContent=(curQ+1)+'/'+questions.length;
+  document.getElementById('g-qnum2').textContent=(curQ+1)+' / '+questions.length;
+  document.getElementById('g-prog').style.width=(curQ/questions.length*100)+'%';
+  document.getElementById('g-streak').textContent=streak;
+  document.getElementById('g-streak-b').textContent=streak>=3?'(+бонус)':'';
+  document.getElementById('g-streak-chip').classList.toggle('hot',streak>=3);
+  document.getElementById('g-cat-b').textContent=q.cat;
+  const lb=document.getElementById('g-lang-b');lb.textContent=q.lang==='en'?'🇬🇧 EN':'🇹🇯 TJ';
+  const db=document.getElementById('g-diff-b');db.textContent=cfg.label;db.className='q-pill '+cfg.cls;
+  document.getElementById('g-q').textContent=q.q;
+  const hint=document.getElementById('g-hint');
+  if(diff==='hard'&&q.hint){hint.textContent='💡 '+q.hint;hint.style.display='none';setTimeout(()=>{if(!answered)hint.style.display='block';},5000);}
+  else hint.style.display='none';
+  document.getElementById('g-fb').style.display='none';
+  document.getElementById('g-next').style.display='none';
+  const letters=['A','B','C','D'];
+  document.getElementById('g-opts').innerHTML=q.opts.map((o,i)=>
+    `<button class="opt" onclick="answer(${i})"><span class="opt-letter">${letters[i]}</span>${o}</button>`
+  ).join('');
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerInt);
+  const cfg=DIFF[diff];
+  document.getElementById('g-timer').style.width='100%';
+  document.getElementById('g-tnum').textContent=timeLeft;
+  document.getElementById('g-tnum').style.color=cfg.tc;
+  timerInt=setInterval(()=>{
+    timeLeft--;
+    const tf=document.getElementById('g-timer'),tn=document.getElementById('g-tnum');
+    if(tf)tf.style.width=(timeLeft/cfg.time*100)+'%';
+    if(tn){tn.textContent=timeLeft;tn.style.color=timeLeft<=5?'var(--hard-l)':cfg.tc;}
+    if(timeLeft<=0){clearInterval(timerInt);if(!answered)autoFail();}
+  },1000);
+}
+
+function autoFail(){
+  answered=true;wrong++;streak=0;
+  document.getElementById('g-streak').textContent=0;document.getElementById('g-streak-b').textContent='';document.getElementById('g-streak-chip').classList.remove('hot');
+  const q=questions[curQ];
+  document.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===q.ans)b.classList.add('correct');});
+  const fb=document.getElementById('g-fb');fb.className='fb fb-time';fb.textContent='⏱ Вақт тамом! '+q.exp;fb.style.display='block';
+  const nb=document.getElementById('g-next');nb.textContent=curQ+1<questions.length?'Давом кун →':'Натиҷа ✦';nb.style.display='block';
+}
+
+function answer(i){
+  if(answered)return;answered=true;clearInterval(timerInt);
+  const q=questions[curQ],cfg=DIFF[diff];
+  document.querySelectorAll('.opt').forEach((b,idx)=>{b.disabled=true;if(idx===q.ans)b.classList.add('correct');else if(idx===i&&i!==q.ans)b.classList.add('wrong');});
+  const fb=document.getElementById('g-fb');
+  if(i===q.ans){
+    streak++;if(streak>maxStreak)maxStreak=streak;
+    let pts=Math.round(10*cfg.mult),bonus=0;
+    if(streak>=5){bonus=5;bonusTotal+=5;}else if(streak>=3){bonus=2;bonusTotal+=2;}
+    if(diff==='hard'&&timeLeft>6){bonus+=2;bonusTotal+=2;}
+    score+=pts+bonus;correct++;
+    document.getElementById('g-score').textContent=score;
+    document.getElementById('g-streak').textContent=streak;
+    if(streak>=3){document.getElementById('g-streak-b').textContent='(+бонус)';document.getElementById('g-streak-chip').classList.add('hot');}
+    fb.className='fb fb-ok';fb.textContent='✅ Дуруст! '+q.exp+(bonus>0?' 🎁 +'+bonus+' бонус':'');
+  }else{
+    wrong++;streak=0;
+    document.getElementById('g-streak').textContent=0;document.getElementById('g-streak-b').textContent='';document.getElementById('g-streak-chip').classList.remove('hot');
+    fb.className='fb fb-no';fb.textContent='❌ Нодуруст. '+q.exp;
+  }
+  fb.style.display='block';
+  const nb=document.getElementById('g-next');nb.textContent=curQ+1<questions.length?'Давом кун →':'Натиҷа ✦';nb.style.display='block';
+}
+
+function nextQ(){curQ++;renderQ();}
+
+async function endGame(){
+  clearInterval(timerInt);lastScore=score;
+  const pct=Math.round(correct/questions.length*100);
+  const tiers=[
+    {min:90,e:'🏆',bg:'rgba(201,149,42,0.2)',sh:'rgba(201,149,42,0.5)',msg:'Аъло! Excellent! Шумо чемпион ҳастед!'},
+    {min:70,e:'⭐',bg:'rgba(27,58,107,0.4)',sh:'rgba(99,102,241,0.4)',msg:'Хуб! Great job! Дониши баланд!'},
+    {min:50,e:'👍',bg:'rgba(46,139,87,0.2)',sh:'rgba(52,196,122,0.3)',msg:'Миёна! Not bad! Бештар машқ кунед!'},
+    {min:0, e:'📚',bg:'rgba(139,26,26,0.2)',sh:'rgba(192,57,43,0.3)',msg:'Дубора кӯшиш кунед! Keep trying!'},
+  ];
+  const t=tiers.find(x=>pct>=x.min);
+  const db=await loadDB();
+  db.push({name:playerName,score,diff,total:questions.length,pct,ts:Date.now()});
+  db.sort((a,b)=>b.score-a.score);if(db.length>50)db.splice(50);
+  await saveDB(db);
+  const rank=db.findIndex(d=>d.name===playerName&&d.score===score)+1;
+  const trophy=document.getElementById('r-trophy');
+  trophy.textContent=t.e;trophy.style.background=t.bg;trophy.style.boxShadow=`0 0 40px ${t.sh}`;
+  document.getElementById('r-score').textContent=score;
+  document.getElementById('r-sub').textContent='хол · '+DIFF[diff].label+' · '+questions.length+' савол';
+  document.getElementById('r-msg').textContent=t.msg;
+  document.getElementById('r-rank').textContent=(rank<=3?['🥇','🥈','🥉'][rank-1]:'✦')+' Ҷойи №'+rank;
+  const bb=document.getElementById('r-bonus');
+  if(bonusTotal>0||maxStreak>=3){bb.style.display='block';bb.textContent='🔥 Макс. силсила: '+maxStreak+' | 🎁 Бонус: +'+bonusTotal+' хол';}
+  else bb.style.display='none';
+  document.getElementById('r-stats').innerHTML=`
+    <div class="stat-box"><div class="stat-n" style="color:#52C47A">${correct}</div><div class="stat-l">✅ Дуруст</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:#E74C3C">${wrong}</div><div class="stat-l">❌ Нодуруст</div></div>
+    <div class="stat-box"><div class="stat-n" style="color:var(--gold2)">${pct}%</div><div class="stat-l">📊 Дарсад</div></div>
+  `;
+  show('s-result');
+}
+
+function restartGame(){show('s-start');const inp=document.getElementById('player-name');if(inp)inp.value=playerName;}
+
+async function showBoard(){show('s-board');await renderBoard(curTab);}
+async function swTab(tab){
+  curTab=tab;['all','easy','hard'].forEach(t=>document.getElementById('tab-'+t).classList.toggle('on',t===tab));
+  await renderBoard(tab);
+}
+async function renderBoard(tab){
+  let db=await loadDB();
+  if(tab!=='all')db=db.filter(d=>d.diff===tab);
+  db.sort((a,b)=>b.score-a.score);
+  const top3=db.slice(0,3),rest=db.slice(3,10);
+  const medals=['🥇','🥈','🥉'];
+  const po=top3.length>=3?[top3[1],top3[0],top3[2]]:top3;
+  const hs=top3.length>=3?[80,110,60]:[110,80];
+  const ri=top3.length>=3?[1,0,2]:[0,1];
+  let podH='';
+  po.forEach((p,pi)=>{
+    const col=gc(ri[pi]);
+    podH+=`<div class="pod-item">
+      <div class="pod-av" style="width:48px;height:48px;background:${col.bg};color:${col.c};font-size:15px">${ini(p.name)}</div>
+      <div class="pod-name">${p.name}</div>
+      <div class="pod-score">${p.score}</div>
+      <div class="pod-block" style="width:86px;height:${hs[pi]}px">${medals[ri[pi]]}</div>
+    </div>`;
+  });
+  let listH='';
+  rest.forEach((p,i)=>{
+    const col=gc(i+3),dc=DIFF[p.diff]||DIFF.easy,isMe=p.name===playerName&&p.score===lastScore;
+    listH+=`<div class="lb-row${isMe?' me':''}">
+      <div class="lb-rank">${i+4}</div>
+      <div class="lb-av" style="width:38px;height:38px;background:${col.bg};color:${col.c}">${ini(p.name)}</div>
+      <div class="lb-name">${p.name}${isMe?' ◆':''}</div>
+      <div class="lb-right"><div class="lb-score">${p.score}</div><span class="lb-dpill ${dc.cls}">${dc.label}</span></div>
+    </div>`;
+  });
+  if(!db.length){document.getElementById('b-pod').innerHTML='';document.getElementById('b-list').innerHTML='<div style="text-align:center;color:var(--text2);padding:2rem;font-size:14px;font-weight:600">Ҳоло натиҷае нест ✦</div>';return;}
+  document.getElementById('b-pod').innerHTML=podH;
+  document.getElementById('b-list').innerHTML=listH;
+}
+
+function getFallback(){return[
+  {cat:'Таърих',lang:'tj',q:'Пойтахти Тоҷикистон?',opts:['Хуҷанд','Душанбе','Кӯлоб','Бохтар'],ans:1,exp:'Душанбе пойтахт аст.',hint:'Шаҳри калонтарин'},
+  {cat:'Математика',lang:'tj',q:'3 × 7 = ?',opts:['18','21','24','28'],ans:1,exp:'3×7=21'},
+  {cat:'History',lang:'en',q:'Who painted the Mona Lisa?',opts:['Picasso','Michelangelo','Da Vinci','Raphael'],ans:2,exp:'Leonardo da Vinci (1503).',hint:'Italian Renaissance'},
+  {cat:'Science',lang:'en',q:'What is H₂O?',opts:['Salt','Water','Oxygen','Hydrogen'],ans:1,exp:'H2O is water.'},
+  {cat:'Ҷуғрофия',lang:'tj',q:'Баландтарин кӯҳи Тоҷикистон?',opts:['Қӯзаккӯл','Исмоили Сомонӣ','Корон','Зарафшон'],ans:1,exp:'7495 метр.',hint:'Номи подшоҳи Сомонӣ'},
+  {cat:'Nature',lang:'en',q:'Largest animal on Earth?',opts:['Elephant','Blue Whale','Giraffe','Shark'],ans:1,exp:'Blue whale — up to 30m long.'},
+  {cat:'Адабиёт',lang:'tj',q:'Шоҳнома аз кӣ аст?',opts:['Рӯдакӣ','Хайём','Фирдавсӣ','Саъдӣ'],ans:2,exp:'Абулқосим Фирдавсӣ.',hint:'Асри X'},
+  {cat:'Math',lang:'en',q:'15 × 4 = ?',opts:['45','55','60','65'],ans:2,exp:'15×4=60'},
+  {cat:'Илм',lang:'tj',q:'Офтоб ситора аст ё сайёра?',opts:['Сайёра','Ситора','Моҳ','Комета'],ans:1,exp:'Офтоб ситора аст.'},
+  {cat:'Geography',lang:'en',q:'Longest river in the world?',opts:['Amazon','Congo','Nile','Yangtze'],ans:2,exp:'The Nile — 6,650 km.',hint:'In Africa'},
+];}
+
+setDiff('easy');
+</script>
+</body>
+</html>
